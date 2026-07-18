@@ -2,9 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
+  const t = useTranslations('auth')
+  const tApp = useTranslations('app')
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,7 +26,7 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/')
+      router.push('/ja/dashboard')
       router.refresh()
     }
   }
@@ -31,14 +34,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">領収書管理</h1>
-        <p className="text-gray-500 text-sm mb-6">アカウントにログイン</p>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">{tApp('title')}</h1>
+        <p className="text-gray-500 text-sm mb-6">{t('loginTitle')}</p>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              メールアドレス
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>
             <input
               type="email"
               value={email}
@@ -49,9 +50,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              パスワード
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('password')}</label>
             <input
               type="password"
               value={password}
@@ -61,24 +60,20 @@ export default function LoginPage() {
             />
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? 'ログイン中...' : 'ログイン'}
+            {loading ? t('loginLoading') : t('loginButton')}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-4">
-          アカウントをお持ちでない方は{' '}
-          <a href="/signup" className="text-blue-600 hover:underline">
-            新規登録
-          </a>
+          {t('toSignup')}{' '}
+          <a href="/ja/signup" className="text-blue-600 hover:underline">{t('signup')}</a>
         </p>
       </div>
     </div>

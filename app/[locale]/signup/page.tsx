@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 
 export default function SignupPage() {
+  const t = useTranslations('auth')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -36,10 +38,8 @@ export default function SignupPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
-          <h2 className="text-xl font-bold text-gray-800 mb-2">確認メールを送信しました</h2>
-          <p className="text-gray-500 text-sm">
-            {email} に確認メールを送りました。メール内のリンクをクリックして登録を完了してください。
-          </p>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">{t('confirmTitle')}</h2>
+          <p className="text-gray-500 text-sm">{email}{t('confirmMessage')}</p>
         </div>
       </div>
     )
@@ -48,14 +48,11 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">領収書管理</h1>
-        <p className="text-gray-500 text-sm mb-6">新規アカウント登録</p>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">{t('signupTitle')}</h1>
 
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              メールアドレス
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>
             <input
               type="email"
               value={email}
@@ -66,9 +63,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              パスワード
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('password')}</label>
             <input
               type="password"
               value={password}
@@ -79,24 +74,20 @@ export default function SignupPage() {
             />
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? '登録中...' : '新規登録'}
+            {loading ? t('signupLoading') : t('signupButton')}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-4">
-          すでにアカウントをお持ちの方は{' '}
-          <a href="/login" className="text-blue-600 hover:underline">
-            ログイン
-          </a>
+          {t('toLogin')}{' '}
+          <a href="/login" className="text-blue-600 hover:underline">{t('login')}</a>
         </p>
       </div>
     </div>
