@@ -100,6 +100,7 @@
     "category": "Category",
     "memo": "Memo",
     "registeredAt": "Registered at",
+    "image": "Receipt image",
     "unclassified": "Uncategorized",
     "locked": "This receipt is locked",
     "delete": "Delete this receipt",
@@ -111,5 +112,18 @@
     "notFound": "Receipt not found",
     "backToList": "Back to list",
     "loading": "Loading..."
+  },
+  "imageUpload": {
+    "label": "Receipt image",
+    "optional": "(optional)",
+    "dropzone": "Click or drag and drop to upload an image",
+    "fileTypes": "JPG, PNG, WebP, PDF (max 10MB)",
+    "uploading": "Uploading...",
+    "existing": "Image already attached",
+    "errorUpload": "Upload failed",
+    "errorLoad": "Could not load image",
+    "loading": "Loading...",
+    "openFull": "Open full size",
+    "openPdf": "Open PDF"
   }
 }

@@ -100,6 +100,7 @@
     "category": "カテゴリ",
     "memo": "メモ",
     "registeredAt": "登録日時",
+    "image": "領収書画像",
     "unclassified": "未分類",
     "locked": "この領収書はロックされています",
     "delete": "この領収書を削除",
@@ -111,5 +112,18 @@
     "notFound": "領収書が見つかりません",
     "backToList": "一覧に戻る",
     "loading": "読み込み中..."
+  },
+  "imageUpload": {
+    "label": "領収書画像",
+    "optional": "(任意)",
+    "dropzone": "クリックまたはドラッグ＆ドロップで画像をアップロード",
+    "fileTypes": "JPG・PNG・WebP・PDF（最大10MB）",
+    "uploading": "アップロード中...",
+    "existing": "画像登録済み",
+    "errorUpload": "アップロードに失敗しました",
+    "errorLoad": "画像を読み込めませんでした",
+    "loading": "読み込み中...",
+    "openFull": "元のサイズで開く",
+    "openPdf": "PDFを開く"
   }
 }

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
+import ReceiptImage from '@/components/ReceiptImage'
+import ImageUpload from '@/components/ImageUpload'
 
 type Category = { id: string; name: string }
 type Receipt = {
@@ -17,6 +19,7 @@ type Receipt = {
   category_id: string | null
   categories: { id: string; name: string } | null
   memo: string | null
+  image_path: string | null
   is_verified: boolean
   is_locked: boolean
   created_at: string
@@ -103,7 +106,11 @@ export default function ReceiptDetailPage() {
     else { const d = await res.json(); setError(d.error ?? t('errorDelete')); setDeleting(false); setConfirmDelete(false) }
   }
 
-  if (loading) return <div className="flex items-center justify-center h-64"><p className="text-gray-400 text-sm">{t('loading')}</p></div>
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400 text-sm">{t('loading')}</p>
+    </div>
+  )
 
   if (!receipt) return (
     <div className="max-w-2xl mx-auto px-4 py-6 text-center">
@@ -176,6 +183,14 @@ export default function ReceiptDetailPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">{tf('memo')}</label>
             <textarea name="memo" value={form.memo} onChange={handleChange} rows={3} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
           </div>
+
+          {/* Image upload in edit mode */}
+          <ImageUpload
+            receiptId={receipt.id}
+            existingPath={receipt.image_path}
+            onUploadComplete={path => setReceipt(prev => prev ? { ...prev, image_path: path } : prev)}
+          />
+
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={saving} className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors">
@@ -187,38 +202,50 @@ export default function ReceiptDetailPage() {
           </div>
         </form>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-          {receipt.is_locked && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-700">{t('locked')}</div>
-          )}
-          <dl className="space-y-4">
-            <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('issueDate')}</dt><dd className="col-span-2 text-sm font-medium text-gray-800">{receipt.issue_date}</dd></div>
-            <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('payee')}</dt><dd className="col-span-2 text-sm font-medium text-gray-800">{receipt.payee_name}</dd></div>
-            {receipt.payee_address && <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('address')}</dt><dd className="col-span-2 text-sm text-gray-800">{receipt.payee_address}</dd></div>}
-            <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('totalAmount')}</dt><dd className="col-span-2 text-lg font-bold text-gray-800">{fmt(receipt.total_amount)}</dd></div>
-            {receipt.tax_amount != null && (
-              <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('tax')}</dt><dd className="col-span-2 text-sm text-gray-800">{fmt(receipt.tax_amount)}{receipt.tax_rate != null && <span className="text-gray-400 ml-2">({receipt.tax_rate}%)</span>}</dd></div>
-            )}
-            <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('category')}</dt><dd className="col-span-2 text-sm text-gray-800">{receipt.categories?.name ?? t('unclassified')}</dd></div>
-            {receipt.memo && <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('memo')}</dt><dd className="col-span-2 text-sm text-gray-800 whitespace-pre-wrap">{receipt.memo}</dd></div>}
-            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100"><dt className="text-sm text-gray-400">{t('registeredAt')}</dt><dd className="col-span-2 text-xs text-gray-400">{new Date(receipt.created_at).toLocaleString(locale === 'ja' ? 'ja-JP' : 'en-US')}</dd></div>
-          </dl>
-          {!receipt.is_locked && (
-            <div className="pt-4 border-t border-gray-100">
-              {confirmDelete ? (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-sm text-red-700 mb-3">{t('deleteConfirm')}</p>
-                  <div className="flex gap-2">
-                    <button onClick={handleDelete} disabled={deleting} className="flex-1 bg-red-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-50">{deleting ? t('deleteLoading') : t('deleteButton')}</button>
-                    <button onClick={() => setConfirmDelete(false)} className="flex-1 border border-gray-300 text-gray-600 py-2 rounded-lg text-sm hover:bg-gray-50">{t('cancelButton')}</button>
-                  </div>
-                </div>
-              ) : (
-                <button onClick={() => setConfirmDelete(true)} className="text-sm text-red-500 hover:text-red-700 hover:underline">{t('delete')}</button>
-              )}
-              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        <div className="space-y-4">
+
+          {/* Receipt image — shown prominently at top */}
+          {receipt.image_path && (
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p className="text-sm font-medium text-gray-700 mb-3">{t('image')}</p>
+              <ReceiptImage imagePath={receipt.image_path} />
             </div>
           )}
+
+          <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+            {receipt.is_locked && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-700">{t('locked')}</div>
+            )}
+            <dl className="space-y-4">
+              <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('issueDate')}</dt><dd className="col-span-2 text-sm font-medium text-gray-800">{receipt.issue_date}</dd></div>
+              <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('payee')}</dt><dd className="col-span-2 text-sm font-medium text-gray-800">{receipt.payee_name}</dd></div>
+              {receipt.payee_address && <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('address')}</dt><dd className="col-span-2 text-sm text-gray-800">{receipt.payee_address}</dd></div>}
+              <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('totalAmount')}</dt><dd className="col-span-2 text-lg font-bold text-gray-800">{fmt(receipt.total_amount)}</dd></div>
+              {receipt.tax_amount != null && (
+                <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('tax')}</dt><dd className="col-span-2 text-sm text-gray-800">{fmt(receipt.tax_amount)}{receipt.tax_rate != null && <span className="text-gray-400 ml-2">({receipt.tax_rate}%)</span>}</dd></div>
+              )}
+              <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('category')}</dt><dd className="col-span-2 text-sm text-gray-800">{receipt.categories?.name ?? t('unclassified')}</dd></div>
+              {receipt.memo && <div className="grid grid-cols-3 gap-2"><dt className="text-sm text-gray-400">{t('memo')}</dt><dd className="col-span-2 text-sm text-gray-800 whitespace-pre-wrap">{receipt.memo}</dd></div>}
+              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100"><dt className="text-sm text-gray-400">{t('registeredAt')}</dt><dd className="col-span-2 text-xs text-gray-400">{new Date(receipt.created_at).toLocaleString(locale === 'ja' ? 'ja-JP' : 'en-US')}</dd></div>
+            </dl>
+
+            {!receipt.is_locked && (
+              <div className="pt-4 border-t border-gray-100">
+                {confirmDelete ? (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p className="text-sm text-red-700 mb-3">{t('deleteConfirm')}</p>
+                    <div className="flex gap-2">
+                      <button onClick={handleDelete} disabled={deleting} className="flex-1 bg-red-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-50">{deleting ? t('deleteLoading') : t('deleteButton')}</button>
+                      <button onClick={() => setConfirmDelete(false)} className="flex-1 border border-gray-300 text-gray-600 py-2 rounded-lg text-sm hover:bg-gray-50">{t('cancelButton')}</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button onClick={() => setConfirmDelete(true)} className="text-sm text-red-500 hover:text-red-700 hover:underline">{t('delete')}</button>
+                )}
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

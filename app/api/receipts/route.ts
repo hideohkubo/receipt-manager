@@ -35,6 +35,8 @@ export async function POST(request: NextRequest) {
   const { data, error } = await supabase
     .from('receipts')
     .insert({
+      // Accept pre-generated id from client (for image upload before save)
+      ...(body.id ? { id: body.id } : {}),
       user_id: user.id,
       payee_name: body.payee_name,
       payee_address: body.payee_address ?? null,
@@ -44,6 +46,7 @@ export async function POST(request: NextRequest) {
       issue_date: body.issue_date,
       category_id: body.category_id ?? null,
       memo: body.memo ?? null,
+      image_path: body.image_path ?? null,
       image_source: body.image_source ?? null,
       is_verified: true,
       verified_at: new Date().toISOString(),
@@ -53,7 +56,6 @@ export async function POST(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Write to audit log
   await supabase.from('audit_log').insert({
     user_id: user.id,
     receipt_id: data.id,
