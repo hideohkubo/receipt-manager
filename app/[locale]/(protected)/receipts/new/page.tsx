@@ -7,6 +7,14 @@ import { useTranslations, useLocale } from 'next-intl'
 import ImageUpload from '@/components/ImageUpload'
 
 type Category = { id: string; name: string }
+type OcrResult = {
+  issue_date: string | null
+  payee_name: string | null
+  total_amount: number | null
+  tax_amount: number | null
+  tax_rate: number | null
+  raw_text: string
+}
 
 function generateId() {
   return crypto.randomUUID()
@@ -21,6 +29,7 @@ export default function NewReceiptPage() {
   const [error, setError] = useState('')
   const [receiptId] = useState(() => generateId())
   const [imagePath, setImagePath] = useState<string | null>(null)
+  const [ocrApplied, setOcrApplied] = useState(false)
 
   const [form, setForm] = useState({
     issue_date: new Date().toISOString().split('T')[0],
@@ -34,6 +43,18 @@ export default function NewReceiptPage() {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  function handleOcrComplete(result: OcrResult) {
+    setForm(prev => ({
+      ...prev,
+      ...(result.issue_date ? { issue_date: result.issue_date } : {}),
+      ...(result.payee_name ? { payee_name: result.payee_name } : {}),
+      ...(result.total_amount ? { total_amount: String(result.total_amount) } : {}),
+      ...(result.tax_amount ? { tax_amount: String(result.tax_amount) } : {}),
+      ...(result.tax_rate ? { tax_rate: String(result.tax_rate) } : {}),
+    }))
+    setOcrApplied(true)
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -75,12 +96,20 @@ export default function NewReceiptPage() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
 
-        {/* Image upload — first so it mirrors the physical receipt workflow */}
+        {/* Image upload with OCR */}
         <ImageUpload
           receiptId={receiptId}
           existingPath={imagePath}
           onUploadComplete={path => setImagePath(path)}
+          onOcrComplete={handleOcrComplete}
         />
+
+        {/* OCR applied notice */}
+        {ocrApplied && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-700">
+            🔍 {t('ocrApplied')}
+          </div>
+        )}
 
         <hr className="border-gray-100" />
 

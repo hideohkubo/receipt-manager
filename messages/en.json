@@ -87,7 +87,8 @@
     "errorPayee": "Please enter a payee name",
     "errorAmount": "Please enter a valid amount",
     "errorSave": "Failed to update receipt",
-    "errorSubmit": "Failed to register receipt"
+    "errorSubmit": "Failed to register receipt",
+    "ocrApplied": "Fields pre-filled from OCR. Please review and correct if needed."
   },
   "receiptDetail": {
     "title": "Receipt Detail",
@@ -119,6 +120,7 @@
     "dropzone": "Click or drag and drop to upload an image",
     "fileTypes": "JPG, PNG, WebP, PDF (max 10MB)",
     "uploading": "Uploading...",
+    "processing": "Running OCR...",
     "existing": "Image already attached",
     "errorUpload": "Upload failed",
     "errorLoad": "Could not load image",

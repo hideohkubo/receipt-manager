@@ -87,7 +87,8 @@
     "errorPayee": "支払先名を入力してください",
     "errorAmount": "金額を正しく入力してください",
     "errorSave": "更新に失敗しました",
-    "errorSubmit": "登録に失敗しました"
+    "errorSubmit": "登録に失敗しました",
+    "ocrApplied": "OCRで情報を自動入力しました。内容を確認してください。"
   },
   "receiptDetail": {
     "title": "領収書詳細",
@@ -119,6 +120,7 @@
     "dropzone": "クリックまたはドラッグ＆ドロップで画像をアップロード",
     "fileTypes": "JPG・PNG・WebP・PDF（最大10MB）",
     "uploading": "アップロード中...",
+    "processing": "OCR処理中...",
     "existing": "画像登録済み",
     "errorUpload": "アップロードに失敗しました",
     "errorLoad": "画像を読み込めませんでした",

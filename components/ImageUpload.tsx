@@ -3,15 +3,26 @@
 import { useState, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 
+type OcrResult = {
+  issue_date: string | null
+  payee_name: string | null
+  total_amount: number | null
+  tax_amount: number | null
+  tax_rate: number | null
+  raw_text: string
+}
+
 type Props = {
   receiptId: string
   existingPath?: string | null
   onUploadComplete: (path: string) => void
+  onOcrComplete?: (result: OcrResult) => void
 }
 
-export default function ImageUpload({ receiptId, existingPath, onUploadComplete }: Props) {
+export default function ImageUpload({ receiptId, existingPath, onUploadComplete, onOcrComplete }: Props) {
   const t = useTranslations('imageUpload')
   const [uploading, setUploading] = useState(false)
+  const [processing, setProcessing] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [isDragging, setIsDragging] = useState(false)
@@ -38,13 +49,32 @@ export default function ImageUpload({ receiptId, existingPath, onUploadComplete 
     if (res.ok) {
       const { path } = await res.json()
       onUploadComplete(path)
+      setUploading(false)
+
+      // Run OCR if callback provided
+      if (onOcrComplete) {
+        setProcessing(true)
+        try {
+          const ocrRes = await fetch('/api/receipts/ocr', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imagePath: path }),
+          })
+          if (ocrRes.ok) {
+            const result = await ocrRes.json()
+            onOcrComplete(result)
+          }
+        } catch (e) {
+          console.error('OCR failed:', e)
+        }
+        setProcessing(false)
+      }
     } else {
       const data = await res.json()
       setError(data.error ?? t('errorUpload'))
       setPreview(null)
+      setUploading(false)
     }
-
-    setUploading(false)
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -68,22 +98,23 @@ export default function ImageUpload({ receiptId, existingPath, onUploadComplete 
     setIsDragging(false)
   }
 
+  const isLoading = uploading || processing
+
   return (
     <div className="space-y-3">
       <label className="block text-sm font-medium text-gray-700">
         {t('label')} <span className="text-gray-400 font-normal">{t('optional')}</span>
       </label>
 
-      {/* Drop zone */}
       <div
-        onClick={() => inputRef.current?.click()}
+        onClick={() => !isLoading && inputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={`
           border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors
           ${isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'}
-          ${uploading ? 'opacity-50 pointer-events-none' : ''}
+          ${isLoading ? 'opacity-50 pointer-events-none' : ''}
         `}
       >
         {preview ? (
@@ -106,11 +137,21 @@ export default function ImageUpload({ receiptId, existingPath, onUploadComplete 
       />
 
       {uploading && (
-        <p className="text-sm text-blue-600 text-center">{t('uploading')}</p>
+        <div className="flex items-center gap-2 text-sm text-blue-600">
+          <span className="animate-spin">⏳</span>
+          <span>{t('uploading')}</span>
+        </div>
+      )}
+
+      {processing && (
+        <div className="flex items-center gap-2 text-sm text-purple-600">
+          <span className="animate-spin">🔍</span>
+          <span>{t('processing')}</span>
+        </div>
       )}
 
       {existingPath && !preview && (
-        <p className="text-xs text-green-600 text-center">✓ {t('existing')}</p>
+        <p className="text-xs text-green-600">✓ {t('existing')}</p>
       )}
 
       {error && <p className="text-sm text-red-500">{error}</p>}
