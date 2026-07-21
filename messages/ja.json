@@ -7,6 +7,7 @@
     "dashboard": "ダッシュボード",
     "receipts": "領収書一覧",
     "export": "エクスポート",
+    "import": "インポート",
     "logout": "ログアウト"
   },
   "auth": {
@@ -147,5 +148,31 @@
     "exporting": "出力中...",
     "errorExport": "エクスポートに失敗しました",
     "note": "エクスポートしたファイルは税務申告や会計処理にご利用いただけます。"
+  },
+  "import": {
+    "back": "戻る",
+    "csvTitle": "CSVインポート",
+    "formatGuide": "CSVファイルの形式",
+    "requiredColumns": "必須列",
+    "optionalColumns": "任意列",
+    "dateFormat": "日付形式",
+    "imageFilenameHint": "「画像ファイル名」列にファイル名を記入しておくと、ZIPインポート時に自動的に画像と領収書が紐付けられます。",
+    "downloadTemplate": "テンプレートをダウンロード",
+    "dropzoneCSV": "クリックまたはドラッグ＆ドロップでCSVファイルをアップロード",
+    "preview": "プレビュー",
+    "rows": "件",
+    "showing5": "先頭5件を表示",
+    "reset": "リセット",
+    "importButton": "インポート実行",
+    "importing": "インポート中...",
+    "cancel": "キャンセル",
+    "resultTitle": "インポート完了",
+    "successCount": "成功",
+    "failedCount": "失敗",
+    "errors": "エラー詳細",
+    "zipHint": "次に、ZIPインポートで画像をまとめてアップロードすると、ファイル名で自動的に紐付けられます。",
+    "viewReceipts": "領収書一覧を見る",
+    "importMore": "さらにインポート",
+    "errorImport": "インポートに失敗しました"
   }
 }

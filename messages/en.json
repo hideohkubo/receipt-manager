@@ -7,6 +7,7 @@
     "dashboard": "Dashboard",
     "receipts": "Receipts",
     "export": "Export",
+    "import": "Import",
     "logout": "Logout"
   },
   "auth": {
@@ -147,5 +148,31 @@
     "exporting": "Exporting...",
     "errorExport": "Export failed",
     "note": "Exported files can be used for tax filing and accounting purposes."
+  },
+  "import": {
+    "back": "Back",
+    "csvTitle": "CSV Import",
+    "formatGuide": "CSV file format",
+    "requiredColumns": "Required columns",
+    "optionalColumns": "Optional columns",
+    "dateFormat": "Date format",
+    "imageFilenameHint": "Add filenames in the 'Image filename' column — when you later import a ZIP, images will be automatically linked to receipts by filename.",
+    "downloadTemplate": "Download template",
+    "dropzoneCSV": "Click or drag and drop a CSV file to upload",
+    "preview": "Preview",
+    "rows": " rows",
+    "showing5": "showing first 5",
+    "reset": "Reset",
+    "importButton": "Import",
+    "importing": "Importing...",
+    "cancel": "Cancel",
+    "resultTitle": "Import complete",
+    "successCount": "Succeeded",
+    "failedCount": "Failed",
+    "errors": "Error details",
+    "zipHint": "Next, use ZIP import to upload images in bulk — they'll be automatically linked to receipts by filename.",
+    "viewReceipts": "View receipts",
+    "importMore": "Import more",
+    "errorImport": "Import failed"
   }
 }
