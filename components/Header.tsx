@@ -23,6 +23,9 @@ export default async function Header() {
           <Link href={`/${locale}/receipts`} className="text-sm text-gray-500 hover:text-gray-800 transition-colors">
             {t('nav.receipts')}
           </Link>
+          <Link href={`/${locale}/export`} className="text-sm text-gray-500 hover:text-gray-800 transition-colors">
+            {t('nav.export')}
+          </Link>
           <LocaleSwitcher />
           {user && (
             <form action="/auth/signout" method="post">

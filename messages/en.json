@@ -6,6 +6,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "receipts": "Receipts",
+    "export": "Export",
     "logout": "Logout"
   },
   "auth": {
@@ -127,5 +128,24 @@
     "loading": "Loading...",
     "openFull": "Open full size",
     "openPdf": "Open PDF"
+  },
+  "export": {
+    "title": "Export",
+    "back": "Back",
+    "period": "Date range",
+    "thisMonth": "This month",
+    "thisQuarter": "This quarter",
+    "thisFiscalYear": "This fiscal year",
+    "lastFiscalYear": "Last fiscal year",
+    "from": "From",
+    "to": "To",
+    "format": "Export format",
+    "csvButton": "Download CSV",
+    "csvDesc": "Opens in Excel or spreadsheet apps",
+    "pdfButton": "Download PDF",
+    "pdfDesc": "Ready to print or file",
+    "exporting": "Exporting...",
+    "errorExport": "Export failed",
+    "note": "Exported files can be used for tax filing and accounting purposes."
   }
 }
